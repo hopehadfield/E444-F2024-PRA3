@@ -75,6 +75,7 @@ def test_messages(client):
     assert b"&lt;Hello&gt;" in rv.data
     assert b"<strong>HTML</strong> allowed here" in rv.data
 
+
 def test_delete_message(client):
     """Ensure the messages are being deleted"""
     rv = client.get("/delete/1")
@@ -85,18 +86,18 @@ def test_delete_message(client):
     data = json.loads(rv.data)
     assert data["status"] == 1
 
+
 def test_search_bar(client):
     """Ensure search works"""
-    
     # Login and make two posts
     login(client, app.config["USERNAME"], app.config["PASSWORD"])
     client.post(
-        "/add", 
+        "/add",
         data=dict(title="test post", text="this is a test post"),
         follow_redirects=True,
     )
     client.post(
-        "/add", 
+        "/add",
         data=dict(title="no overlap", text="no overlapping words"),
         follow_redirects=True,
     )
