@@ -81,3 +81,27 @@ def test_delete_message(client):
     rv = client.get('/delete/1')
     data = json.loads(rv.data)
     assert data["status"] == 1
+
+def test_search_bar(client):
+    """Ensure search works"""
+    
+    # Login and make two posts
+    login(client, app.config["USERNAME"], app.config["PASSWORD"])
+    client.post(
+        "/add", 
+        data=dict(title="test post", text="this is a test post"),
+        follow_redirects=True,
+    )
+    client.post(
+        "/add", 
+        data=dict(title="no overlap", text="no overlapping words"),
+        follow_redirects=True,
+    )
+
+    # Search using the keyword "test"
+    response = client.get('/search/?query=test')
+
+    # Assert response is okay and that only the post titled "test post" shows up
+    assert response.status_code == 200
+    assert b"test post" in response.data
+    assert b"no overlap" not in response.data
